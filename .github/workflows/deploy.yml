@@ -1,9 +1,11 @@
-# Builds the app and publishes it to GitHub Pages on every push to main.
+# Builds the app and publishes it to GitHub Pages.
+# For now it only runs when you click "Run workflow" on the repo's Actions tab,
+# so pushes are just backups. To publish on every push later, add back:
+#   push:
+#     branches: [main]
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

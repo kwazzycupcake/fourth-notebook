@@ -11,6 +11,8 @@ const base = '/sixth-notebook/'
 
 export default defineConfig({
   base,
+  // Let other devices on your Wi-Fi (like your phone) open the dev server.
+  server: { host: true },
   plugins: [
     react(),
     tailwindcss(),

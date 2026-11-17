@@ -11,6 +11,8 @@ npm run dev
 
 Then open http://localhost:5173/sixth-notebook/
 
+To try it on your phone, connect it to the same Wi-Fi and open the "Network" address that `npm run dev` prints.
+
 ## Other commands
 
 - `npm test` runs the tests
@@ -19,5 +21,6 @@ Then open http://localhost:5173/sixth-notebook/
 
 ## Deploying
 
-Every push to `main` builds and publishes to GitHub Pages (see `.github/workflows/deploy.yml`).
+Publishing is manual for now: on GitHub, open Actions → "Deploy to GitHub Pages" → Run workflow
+(Pages must be set to "GitHub Actions" under Settings → Pages). See `.github/workflows/deploy.yml`.
 Words are stored in your browser, not on GitHub. Use Backup & restore to move them between devices.
