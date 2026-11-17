@@ -13,3 +13,7 @@ export const field =
   'w-full rounded-md border border-line bg-card px-3 py-2 text-[17px] text-ink placeholder:text-muted/70 transition-colors focus:border-green focus:outline-none'
 
 export const label = 'smallcaps text-sm text-muted'
+
+/** Compact dropdown for filter rows. */
+export const select =
+  'max-w-full rounded-md border border-line bg-card px-2.5 py-1.5 text-[15px] text-ink transition-colors hover:border-green focus:border-green focus:outline-none'
