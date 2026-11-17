@@ -41,7 +41,11 @@ export default function More() {
           <a href="https://en.wiktionary.org" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-green">
             Wiktionary
           </a>{' '}
-          (CC BY-SA).
+          (CC BY-SA). Word suggestions come from{' '}
+          <a href="https://www.datamuse.com/api/" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-green">
+            Datamuse
+          </a>
+          .
         </p>
       </section>
     </>

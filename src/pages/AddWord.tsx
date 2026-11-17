@@ -4,8 +4,10 @@ import { Link, useSearchParams } from 'react-router'
 import Illustration from '../components/Illustration'
 import PageHeader from '../components/PageHeader'
 import WordForm from '../components/WordForm'
-import { btn, field } from '../components/ui'
+import WordSearch from '../components/WordSearch'
+import { btn } from '../components/ui'
 import { lookupWord, type DefinitionOption } from '../lib/dictionary'
+import { suggestWords } from '../lib/suggest'
 import { usedTitles } from '../lib/titles'
 import type { Word } from '../lib/types'
 import { emptyForm, formFromLookup, formToInput, type FormValues } from '../lib/wordForm'
@@ -30,10 +32,12 @@ export default function AddWord() {
   const [options, setOptions] = useState<DefinitionOption[]>([])
   const [notice, setNotice] = useState<string | null>(null)
   const [saved, setSaved] = useState<Word | null>(null)
+  const [didYouMean, setDidYouMean] = useState<string[]>([])
   const searchInput = useRef<HTMLInputElement>(null)
   const requestId = useRef(0)
 
   const titles = useMemo(() => usedTitles(words), [words])
+  const savedKeys = useMemo(() => new Set(words.map((w) => wordKey(w.word))), [words])
   const lastSource = notebook.settings.lastSource
 
   const startForm = (word: string) => {
@@ -47,6 +51,7 @@ export default function AddWord() {
     const id = ++requestId.current
     setSaved(null)
     setNotice(null)
+    setDidYouMean([])
     setPhase('loading')
     const outcome = await lookupWord(word)
     if (id !== requestId.current) return // a newer lookup started
@@ -58,6 +63,12 @@ export default function AddWord() {
       setNotice(outcome.reason === 'not-found' ? `“${word}” ${LOOKUP_MESSAGES['not-found']}` : LOOKUP_MESSAGES[outcome.reason])
     }
     setPhase('form')
+
+    // A likely typo? Offer close spellings.
+    if (!outcome.ok && outcome.reason === 'not-found') {
+      const close = (await suggestWords(word)).filter((s) => wordKey(s) !== wordKey(word) && !s.includes(' ')).slice(0, 3)
+      if (id === requestId.current) setDidYouMean(close)
+    }
   }
 
   // Arriving from Home's quick-add box: /add?word=tirade
@@ -120,23 +131,17 @@ export default function AddWord() {
 
       {phase !== 'form' ? (
         <div className="flex flex-col gap-4">
-          <form onSubmit={onSearch} className="flex flex-col gap-3 sm:flex-row">
-            <label htmlFor="lookup" className="sr-only">
-              Word to look up
-            </label>
-            <input
-              id="lookup"
-              ref={searchInput}
-              className={`${field} font-display text-2xl`}
+          <form onSubmit={onSearch} className="flex flex-col gap-3 sm:flex-row sm:items-start">
+            <WordSearch
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Type a word…"
-              autoFocus
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-              enterKeyHint="search"
+              onChange={setQuery}
+              onPick={(w) => {
+                setQuery(w)
+                void lookup(w)
+              }}
               disabled={phase === 'loading'}
+              inputRef={searchInput}
+              inNotebook={(w) => savedKeys.has(wordKey(w))}
             />
             <button type="submit" className={btn.primary} disabled={phase === 'loading' || !query.trim()}>
               {phase === 'loading' ? 'Looking up…' : 'Look up'}
@@ -157,7 +162,29 @@ export default function AddWord() {
         </div>
       ) : (
         <div className="flex flex-col gap-5">
-          {notice && <p className="rounded-md border border-line bg-card px-4 py-3">{notice}</p>}
+          {notice && (
+            <div className="flex flex-col gap-2 rounded-md border border-line bg-card px-4 py-3">
+              <p>{notice}</p>
+              {didYouMean.length > 0 && (
+                <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span className="text-muted">Did you mean</span>
+                  {didYouMean.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => {
+                        setQuery(s)
+                        void lookup(s)
+                      }}
+                      className="font-display text-xl font-semibold text-green underline decoration-1 underline-offset-4"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </p>
+              )}
+            </div>
+          )}
           {duplicate && (
             <p className="rounded-md border border-green px-4 py-3">
               “{duplicate.word}” is already in your notebook.{' '}

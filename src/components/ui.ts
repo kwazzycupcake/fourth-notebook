@@ -1,7 +1,7 @@
 // Shared class names, so every button and field looks the same.
 
 const btnBase =
-  'inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-[15px] transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md px-4 py-2 text-[15px] transition-colors disabled:cursor-not-allowed disabled:opacity-50'
 
 export const btn = {
   primary: `${btnBase} bg-green text-paper hover:bg-green-deep`,
