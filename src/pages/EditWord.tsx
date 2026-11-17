@@ -1,3 +1,4 @@
+import { usePageTitle } from '../lib/usePageTitle'
 import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { ButtonLink } from '../components/Button'
@@ -9,6 +10,7 @@ import { formFromWord, formToInput, type FormValues } from '../lib/wordForm'
 import { useNotebook } from '../store/context'
 
 export default function EditWord() {
+  usePageTitle('Edit word')
   const { id } = useParams()
   const navigate = useNavigate()
   const { words, updateWord } = useNotebook()

@@ -1,3 +1,4 @@
+import { usePageTitle } from '../lib/usePageTitle'
 import { useCallback, useMemo, useState } from 'react'
 import { ButtonLink } from '../components/Button'
 import EmptyState from '../components/EmptyState'
@@ -23,6 +24,7 @@ function loadView(): { filters: LibraryFilters; sort: SortOrder } {
 }
 
 export default function Library() {
+  usePageTitle('Library')
   const { words, toggleFavourite, removeWord } = useNotebook()
   const [view, setView] = useState(loadView)
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set())

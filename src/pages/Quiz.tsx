@@ -1,3 +1,4 @@
+import { usePageTitle } from '../lib/usePageTitle'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { ButtonLink } from '../components/Button'
@@ -35,6 +36,7 @@ const Masthead = ({ right }: { right: string }) => (
 )
 
 export default function Quiz() {
+  usePageTitle('The evening quiz')
   const { words, recordQuiz } = useNotebook()
   const [format, setFormat] = useState<QuizFormat>('meaning')
   const [length, setLength] = useState(10)

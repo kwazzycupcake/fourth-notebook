@@ -1,3 +1,4 @@
+import { usePageTitle } from '../lib/usePageTitle'
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import Illustration from '../components/Illustration'
@@ -20,6 +21,7 @@ const LOOKUP_MESSAGES = {
 }
 
 export default function AddWord() {
+  usePageTitle('Add a word')
   const { words, addWord, setLastSource, notebook } = useNotebook()
   const [params, setParams] = useSearchParams()
   const [query, setQuery] = useState('')

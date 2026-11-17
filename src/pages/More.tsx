@@ -1,4 +1,6 @@
+import { usePageTitle } from '../lib/usePageTitle'
 import { Link } from 'react-router'
+import Illustration from '../components/Illustration'
 import PageHeader from '../components/PageHeader'
 
 const links = [
@@ -7,6 +9,7 @@ const links = [
 ]
 
 export default function More() {
+  usePageTitle('More')
   return (
     <>
       <PageHeader title="More" />
@@ -23,6 +26,24 @@ export default function More() {
           </li>
         ))}
       </ul>
+
+      <section className="mt-12 flex flex-col items-center gap-3 text-center text-sm text-muted">
+        <Illustration name="newspaper" className="w-24" decorative />
+        <p className="max-w-sm">
+          Your words are saved in this browser only, never on a server. Download a backup now and then.
+        </p>
+        <p className="max-w-sm">
+          Definitions come from the{' '}
+          <a href="https://dictionaryapi.dev" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-green">
+            Free Dictionary API
+          </a>
+          , based on{' '}
+          <a href="https://en.wiktionary.org" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-green">
+            Wiktionary
+          </a>{' '}
+          (CC BY-SA).
+        </p>
+      </section>
     </>
   )
 }

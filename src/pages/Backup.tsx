@@ -1,3 +1,4 @@
+import { usePageTitle } from '../lib/usePageTitle'
 import { useRef, useState, type ChangeEvent } from 'react'
 import Illustration from '../components/Illustration'
 import PageHeader from '../components/PageHeader'
@@ -27,6 +28,7 @@ function download(text: string, filename: string) {
 }
 
 export default function Backup() {
+  usePageTitle('Backup & restore')
   const { notebook, words, replaceNotebook, markBackedUp, addWord } = useNotebook()
   const fileInput = useRef<HTMLInputElement>(null)
   const [pending, setPending] = useState<Extract<ParsedBackup, { ok: true }> | null>(null)

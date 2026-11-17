@@ -1,7 +1,10 @@
+import { usePageTitle } from '../lib/usePageTitle'
+import { ButtonLink } from '../components/Button'
 import Illustration from '../components/Illustration'
 
 // Draft copy. Rewrite it in your own voice whenever you like.
 export default function Story() {
+  usePageTitle('Our story')
   return (
     <article className="mx-auto flex max-w-xl flex-col gap-5">
       <div className="flex justify-between border-b border-ink pb-2 text-sm">
@@ -21,6 +24,11 @@ export default function Story() {
         “So, what does <span className="underline decoration-1 underline-offset-4">ubiquitous</span> mean?”
       </p>
       <p>He filled five notebooks. This app is my sixth.</p>
+
+      <div className="mt-4 flex flex-wrap justify-center gap-3 border-t border-line pt-6">
+        <ButtonLink to="/add">Add a word</ButtonLink>
+        <ButtonLink to="/quiz" variant="secondary">Take the evening quiz</ButtonLink>
+      </div>
     </article>
   )
 }
