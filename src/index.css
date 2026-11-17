@@ -1,0 +1,56 @@
+@import 'tailwindcss';
+
+/*
+  Design tokens. The rule: warm cream + forest green, nothing else.
+  Use these names in classes, e.g. bg-paper, text-green, border-line, font-display.
+*/
+@theme {
+  --color-paper: #f5f0e6;        /* page background */
+  --color-card: #fbf8f0;         /* raised surfaces, illustration fill */
+  --color-paper-deep: #e8e2d3;   /* notes, hover, subtle fills */
+  --color-line: #d9d0bd;         /* borders and dividers */
+  --color-muted: #6e7468;        /* secondary text */
+  --color-ink: #22302a;          /* body text (green-black) */
+  --color-green: #2e4a3b;        /* the one accent */
+  --color-green-deep: #213729;   /* accent hover/pressed */
+
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-hand: 'Caveat', 'Bradley Hand', cursive;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  h1, h2, h3 {
+    @apply font-display text-green;
+    font-weight: 600;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-green);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+/* Small caps labels used for mastheads and section kickers */
+@utility smallcaps {
+  font-variant: small-caps;
+  text-transform: lowercase;
+  letter-spacing: 0.06em;
+}
