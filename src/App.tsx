@@ -3,6 +3,7 @@ import Layout from './components/Layout'
 import Home from './pages/Home'
 import Library from './pages/Library'
 import AddWord from './pages/AddWord'
+import EditWord from './pages/EditWord'
 import Quiz from './pages/Quiz'
 import More from './pages/More'
 import Story from './pages/Story'
@@ -17,6 +18,7 @@ export default function App() {
         <Route index element={<Home />} />
         <Route path="library" element={<Library />} />
         <Route path="add" element={<AddWord />} />
+        <Route path="words/:id/edit" element={<EditWord />} />
         <Route path="quiz" element={<Quiz />} />
         <Route path="more" element={<More />} />
         <Route path="story" element={<Story />} />

@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 import { ButtonLink } from '../components/Button'
+import QuickAdd from '../components/QuickAdd'
 import EmptyState from '../components/EmptyState'
 import { useNotebook } from '../store/context'
 
@@ -32,7 +34,8 @@ export default function Home() {
           <p>He filled five. This is the sixth.</p>
         </EmptyState>
       ) : (
-        <section className="flex flex-col gap-4">
+        <section className="flex flex-col gap-5">
+          <QuickAdd />
           <p className="font-display text-3xl font-semibold text-green">
             {words.length} {words.length === 1 ? 'word' : 'words'} in your notebook
           </p>
@@ -40,9 +43,11 @@ export default function Home() {
             <span className="smallcaps text-sm text-muted">Recently saved</span>
             <ul>
               {recent.map((w) => (
-                <li key={w.id} className="border-b border-line py-2">
-                  <span className="font-display text-xl font-semibold">{w.word}</span>
-                  <span className="text-muted"> — {w.meanings[0]}</span>
+                <li key={w.id} className="border-b border-line">
+                  <Link to={`/words/${w.id}/edit`} className="block py-2 hover:text-green">
+                    <span className="font-display text-xl font-semibold">{w.word}</span>
+                    <span className="text-muted"> — {w.meanings[0]}</span>
+                  </Link>
                 </li>
               ))}
             </ul>

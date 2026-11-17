@@ -21,6 +21,8 @@ export type Word = {
   /** First item is the main meaning. Some words (like "discretion") have more. */
   meanings: string[]
   partOfSpeech?: PartOfSpeech
+  /** Pronunciation, e.g. /ˈtaɪɹeɪd/ */
+  phonetic?: string
   example?: string
   synonyms: string[]
   antonyms: string[]
@@ -39,7 +41,9 @@ export type Word = {
 
 /** What you type when adding a word. Everything except word + meanings is optional. */
 export type WordInput = Pick<Word, 'word' | 'meanings'> &
-  Partial<Pick<Word, 'partOfSpeech' | 'example' | 'synonyms' | 'antonyms' | 'source' | 'notes' | 'favourite' | 'savedAt'>>
+  Partial<
+    Pick<Word, 'partOfSpeech' | 'phonetic' | 'example' | 'synonyms' | 'antonyms' | 'source' | 'notes' | 'favourite' | 'savedAt'>
+  >
 
 export type QuizFormat = 'meaning' | 'word'
 
