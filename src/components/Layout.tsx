@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link, NavLink, Outlet } from 'react-router'
 import { APP_NAME } from '../config'
+import { useNotebook } from '../store/context'
 
 type NavItem = { to: string; label: string; icon: ReactNode; end?: boolean }
 
@@ -29,6 +30,7 @@ const items: NavItem[] = [
 ]
 
 export default function Layout() {
+  const { saveError } = useNotebook()
   return (
     <div className="min-h-dvh flex flex-col">
       {/* Top bar: brand everywhere, links on desktop */}
@@ -60,6 +62,14 @@ export default function Layout() {
       </header>
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-[max(1rem,env(safe-area-inset-left))] pb-28 pt-8 sm:pb-16">
+        {saveError && (
+          <p role="alert" className="mb-6 rounded-md border border-green bg-card px-4 py-3">
+            {saveError}{' '}
+            <Link to="/backup" className="text-green underline underline-offset-2">
+              Go to Backup
+            </Link>
+          </p>
+        )}
         <Outlet />
       </main>
 
