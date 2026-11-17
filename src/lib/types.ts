@@ -29,7 +29,7 @@ export type Word = {
   source?: Source
   notes?: string
   favourite: boolean
-  /** When you found the word. WhatsApp imports keep the message date. */
+  /** When you found the word. */
   savedAt: string
   updatedAt: string
   timesRight: number

@@ -7,7 +7,6 @@ import EditWord from './pages/EditWord'
 import Quiz from './pages/Quiz'
 import More from './pages/More'
 import Story from './pages/Story'
-import Import from './pages/Import'
 import Backup from './pages/Backup'
 import NotFound from './pages/NotFound'
 
@@ -22,7 +21,6 @@ export default function App() {
         <Route path="quiz" element={<Quiz />} />
         <Route path="more" element={<More />} />
         <Route path="story" element={<Story />} />
-        <Route path="import" element={<Import />} />
         <Route path="backup" element={<Backup />} />
         <Route path="*" element={<NotFound />} />
       </Route>

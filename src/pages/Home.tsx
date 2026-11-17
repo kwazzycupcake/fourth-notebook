@@ -27,7 +27,6 @@ export default function Home() {
           actions={
             <>
               <ButtonLink to="/add">Add your first word</ButtonLink>
-              <ButtonLink to="/import" variant="secondary">Import from WhatsApp</ButtonLink>
             </>
           }
         >

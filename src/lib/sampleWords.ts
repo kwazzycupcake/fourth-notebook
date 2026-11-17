@@ -1,6 +1,6 @@
 import type { WordInput } from './types'
 
-/** A few words from your WhatsApp notes, for trying things out during development. */
+/** A few real words, for trying things out during development. */
 export const SAMPLE_WORDS: WordInput[] = [
   {
     word: 'tirade',

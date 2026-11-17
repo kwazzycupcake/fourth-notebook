@@ -3,7 +3,6 @@ import PageHeader from '../components/PageHeader'
 
 const links = [
   { to: '/story', title: 'Our story', note: 'The first five notebooks' },
-  { to: '/import', title: 'Import from WhatsApp', note: 'Bring in the words you already saved' },
   { to: '/backup', title: 'Backup & restore', note: 'Keep a copy of your notebook as a file' },
 ]
 
