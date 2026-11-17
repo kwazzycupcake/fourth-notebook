@@ -52,7 +52,11 @@ export default function Home() {
             </ul>
           </div>
           <div className="flex flex-wrap gap-3">
-            <ButtonLink to="/add">Add a word</ButtonLink>
+            {words.length >= 4 ? (
+              <ButtonLink to="/quiz">Start the evening quiz</ButtonLink>
+            ) : (
+              <ButtonLink to="/add">Add a word</ButtonLink>
+            )}
             <ButtonLink to="/library" variant="secondary">Open library</ButtonLink>
           </div>
         </section>
