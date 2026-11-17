@@ -7,9 +7,23 @@ import Toast from '../components/Toast'
 import WordEntry from '../components/WordEntry'
 import { btn, field, select } from '../components/ui'
 import { SOURCE_LABELS } from '../lib/labels'
-import { NO_FILTERS, filterWords, hasFilters, letterOf, sortWords, type LibraryFilters, type SortOrder } from '../lib/search'
+import {
+  ALPHABET,
+  NO_FILTERS,
+  filterWords,
+  groupByLetter,
+  hasFilters,
+  sortWords,
+  type LibraryFilters,
+  type SortOrder,
+} from '../lib/search'
 import { PARTS_OF_SPEECH, SOURCE_TYPES, type PartOfSpeech, type SourceType, type Word } from '../lib/types'
 import { useNotebook } from '../store/context'
+
+/** Words shown per letter before "Show all". */
+const PER_LETTER = 3
+/** Words shown at a time in "Newest first" and "Most missed". */
+const PAGE = 30
 
 // Remember sort and filters while you hop to Edit and back.
 const SESSION_KEY = 'sixth-notebook.library'
@@ -61,6 +75,43 @@ export default function Library() {
     const undo = removeWord(w.id)
     setToast({ message: `Deleted “${w.word}”.`, undo })
   }
+
+  const entry = (w: Word) => (
+    <WordEntry
+      key={w.id}
+      word={w}
+      expanded={expanded.has(w.id)}
+      onToggle={() => toggle(w.id)}
+      onFavourite={() => toggleFavourite(w.id)}
+      onDelete={() => remove(w)}
+    />
+  )
+
+  // ---- A–Z: grouped by letter, a few words each ----
+  const searching = hasFilters(filters)
+  const groups = sort === 'az' ? groupByLetter(shown) : null
+  const [openLetters, setOpenLetters] = useState<Set<string>>(() => new Set())
+  const toggleLetter = (letter: string) => {
+    const wasOpen = openLetters.has(letter)
+    setOpenLetters((prev) => {
+      const next = new Set(prev)
+      if (wasOpen) next.delete(letter)
+      else next.add(letter)
+      return next
+    })
+    // Collapsing a long list can leave you far below it; bring the heading back.
+    if (wasOpen) requestAnimationFrame(() => document.getElementById(`letter-${letter}`)?.scrollIntoView({ block: 'start' }))
+  }
+  const jumpTo = (letter: string) => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    document.getElementById(`letter-${letter}`)?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+  }
+
+  // ---- Other sort orders: 30 at a time ----
+  // The count resets whenever sort or filters change.
+  const viewKey = JSON.stringify(view)
+  const [page, setPage] = useState({ key: viewKey, count: PAGE })
+  const visibleCount = page.key === viewKey ? page.count : PAGE
 
   if (words.length === 0) {
     return (
@@ -176,24 +227,58 @@ export default function Library() {
             Clear filters
           </button>
         </div>
+      ) : groups ? (
+        <>
+          <LetterIndex available={new Set(groups.map((g) => g.letter))} onJump={jumpTo} />
+          <div className="flex flex-col gap-8 pt-4">
+            {groups.map(({ letter, words: inLetter }) => {
+              // While searching or filtering, show every match. Otherwise a few per letter.
+              const open = searching || openLetters.has(letter) || inLetter.length <= PER_LETTER
+              const visible = open ? inLetter : inLetter.slice(0, PER_LETTER)
+              const label = letter === '#' ? 'numbers and symbols' : letter
+              return (
+                <section key={letter} aria-labelledby={`letter-${letter}`}>
+                  <h2
+                    id={`letter-${letter}`}
+                    className="flex scroll-mt-20 items-baseline justify-between border-b border-line pb-1 text-4xl"
+                  >
+                    {letter}
+                    <span className="font-body text-sm font-normal text-muted">
+                      {inLetter.length} {inLetter.length === 1 ? 'word' : 'words'}
+                    </span>
+                  </h2>
+                  <ul>{visible.map(entry)}</ul>
+                  {!searching && inLetter.length > PER_LETTER && (
+                    <button
+                      type="button"
+                      onClick={() => toggleLetter(letter)}
+                      aria-expanded={openLetters.has(letter)}
+                      className="mt-2 text-[15px] text-green underline-offset-2 hover:underline"
+                    >
+                      {openLetters.has(letter)
+                        ? 'Show fewer'
+                        : `Show all ${inLetter.length} words in ${label} →`}
+                    </button>
+                  )}
+                </section>
+              )
+            })}
+          </div>
+        </>
       ) : (
-        <ul>
-          {shown.map((w, i) => {
-            const letter = sort === 'az' ? letterOf(w.word) : null
-            const newLetter = letter && (i === 0 || letterOf(shown[i - 1].word) !== letter)
-            return (
-              <Entry key={w.id} letter={newLetter ? letter : null}>
-                <WordEntry
-                  word={w}
-                  expanded={expanded.has(w.id)}
-                  onToggle={() => toggle(w.id)}
-                  onFavourite={() => toggleFavourite(w.id)}
-                  onDelete={() => remove(w)}
-                />
-              </Entry>
-            )
-          })}
-        </ul>
+        <>
+          <ul>{shown.slice(0, visibleCount).map(entry)}</ul>
+          {shown.length > visibleCount && (
+            <div className="mt-6 flex flex-col items-center gap-1">
+              <button type="button" className={btn.secondary} onClick={() => setPage({ key: viewKey, count: visibleCount + PAGE })}>
+                Show {Math.min(PAGE, shown.length - visibleCount)} more
+              </button>
+              <span className="text-sm text-muted">
+                Showing {visibleCount} of {shown.length}
+              </span>
+            </div>
+          )}
+        </>
       )}
 
       {toast && (
@@ -211,16 +296,31 @@ export default function Library() {
   )
 }
 
-/** Adds an A–Z letter heading above the first word of each letter. */
-function Entry({ letter, children }: { letter: string | null; children: React.ReactNode }) {
+/** A–Z tabs that stay at the top while you scroll. Letters with no words are faded. */
+function LetterIndex({ available, onJump }: { available: Set<string>; onJump: (letter: string) => void }) {
   return (
-    <>
-      {letter && (
-        <li aria-hidden className="mt-6 border-b border-line pb-1 font-display text-4xl font-semibold leading-none text-green first:mt-0">
-          {letter}
-        </li>
-      )}
-      {children}
-    </>
+    <nav
+      aria-label="Jump to letter"
+      className="sticky top-[env(safe-area-inset-top,0px)] z-10 -mx-4 border-b border-line bg-paper/95 px-4 py-1.5 backdrop-blur"
+    >
+      <ul className="flex gap-0.5 overflow-x-auto sm:justify-between [scrollbar-width:none]">
+        {ALPHABET.filter((l) => l !== '#' || available.has('#')).map((l) => {
+          const has = available.has(l)
+          return (
+            <li key={l}>
+              <button
+                type="button"
+                disabled={!has}
+                onClick={() => onJump(l)}
+                aria-label={has ? `Jump to ${l === '#' ? 'numbers and symbols' : l}` : `No words under ${l}`}
+                className="grid h-8 min-w-7 place-items-center rounded font-display text-lg font-semibold text-green transition-colors hover:bg-paper-deep disabled:font-medium disabled:text-line disabled:hover:bg-transparent"
+              >
+                {l}
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+    </nav>
   )
 }

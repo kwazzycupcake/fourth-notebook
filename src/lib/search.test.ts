@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { NO_FILTERS, filterWords, letterOf, sortWords } from './search'
+import { NO_FILTERS, filterWords, groupByLetter, letterOf, sortWords } from './search'
 import { createWord } from './words'
 
 const tirade = createWord({
@@ -58,6 +58,21 @@ describe('sortWords', () => {
       { ...cafe, timesWrong: 1, timesRight: 0 },
     ]
     expect(words(sortWords(missed, 'missed'))).toEqual(['Atone', 'café', 'tirade'])
+  })
+})
+
+describe('groupByLetter', () => {
+  it('groups an A–Z list by first letter and puts symbols last', () => {
+    const list = sortWords(
+      [...all, createWord({ word: '24/7', meanings: ['always'] }), createWord({ word: 'abscond', meanings: ['flee'] })],
+      'az',
+    )
+    expect(groupByLetter(list).map((g) => `${g.letter}:${g.words.map((w) => w.word).join(',')}`)).toEqual([
+      'A:abscond,Atone',
+      'C:café',
+      'T:tirade',
+      '#:24/7',
+    ])
   })
 })
 

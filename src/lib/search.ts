@@ -73,3 +73,19 @@ export function letterOf(word: string): string {
   const first = fold(word.trim()).charAt(0).toUpperCase()
   return /[A-Z]/.test(first) ? first : '#'
 }
+
+/** Every heading the index can show, in order. */
+export const ALPHABET = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '#']
+
+/** Splits an A–Z sorted list into letter groups, keeping the order. */
+export function groupByLetter(sorted: Word[]): { letter: string; words: Word[] }[] {
+  const groups: { letter: string; words: Word[] }[] = []
+  for (const w of sorted) {
+    const letter = letterOf(w.word)
+    const last = groups[groups.length - 1]
+    if (last && last.letter === letter) last.words.push(w)
+    else groups.push({ letter, words: [w] })
+  }
+  // "#" (numbers, symbols) sorts first alphabetically; show it last, like a dictionary.
+  return [...groups.filter((g) => g.letter !== '#'), ...groups.filter((g) => g.letter === '#')]
+}
