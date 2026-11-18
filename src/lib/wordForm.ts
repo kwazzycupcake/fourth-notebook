@@ -84,11 +84,15 @@ export function splitList(text: string): string[] {
 }
 
 export function formToInput(v: FormValues): WordInput {
-  const source: Source | undefined = v.sourceType
+  const title = v.sourceTitle.trim() || undefined
+  // A title typed without picking a chip still counts, filed under "Other".
+  const type = v.sourceType || (title ? 'other' : undefined)
+  const source: Source | undefined = type
     ? {
-        type: v.sourceType,
-        title: v.sourceTitle.trim() || undefined,
-        author: v.sourceType === 'book' ? v.sourceAuthor.trim() || undefined : undefined,
+        type,
+        title,
+        // The form no longer asks for an author, but keeps one saved on older words.
+        author: type === 'book' ? v.sourceAuthor.trim() || undefined : undefined,
       }
     : undefined
   return {

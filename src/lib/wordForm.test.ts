@@ -17,6 +17,12 @@ describe('wordForm', () => {
     expect(formToInput(v).source).toEqual({ type: 'show', title: 'Succession', author: undefined })
   })
 
+  it('keeps a title typed without choosing a source type', () => {
+    const v = { ...emptyForm('vie'), meanings: ['to compete'], sourceTitle: ' Succession ' }
+    expect(formToInput(v).source).toEqual({ type: 'other', title: 'Succession', author: undefined })
+    expect(formToInput({ ...v, sourceTitle: '' }).source).toBeUndefined()
+  })
+
   it('drops blank meanings and requires word + meaning', () => {
     const v = { ...emptyForm(' '), meanings: ['  ', ''] }
     expect(validateForm(v)).toEqual({ word: expect.any(String), meaning: expect.any(String) })

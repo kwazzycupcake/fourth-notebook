@@ -22,15 +22,6 @@ const SOURCE_OPTIONS: { value: SourceType; label: string }[] = [
   { value: 'other', label: 'Other' },
 ]
 
-const TITLE_PLACEHOLDER: Record<SourceType, string> = {
-  book: 'Book title',
-  show: 'Show name',
-  film: 'Film title',
-  news: 'Newspaper, channel or site',
-  conversation: 'Who with? (optional)',
-  other: 'Where? (optional)',
-}
-
 export default function WordForm({
   values,
   onChange,
@@ -206,34 +197,21 @@ export default function WordForm({
           Where did you find it?
         </span>
         <Chips options={SOURCE_OPTIONS} value={values.sourceType} onChange={(v) => set('sourceType', v)} labelledBy="source-label" />
-        {values.sourceType && (
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <input
-              id="source-title"
-              aria-label={TITLE_PLACEHOLDER[values.sourceType]}
-              className={field}
-              value={values.sourceTitle}
-              onChange={(e) => set('sourceTitle', e.target.value)}
-              placeholder={TITLE_PLACEHOLDER[values.sourceType]}
-              list="title-suggestions"
-            />
-            {values.sourceType === 'book' && (
-              <input
-                id="source-author"
-                aria-label="Author"
-                className={field}
-                value={values.sourceAuthor}
-                onChange={(e) => set('sourceAuthor', e.target.value)}
-                placeholder="Author (optional)"
-              />
-            )}
-            <datalist id="title-suggestions">
-              {titleSuggestions.map((t) => (
-                <option key={t} value={t} />
-              ))}
-            </datalist>
-          </div>
-        )}
+        {/* One field that stays the same whichever chip is chosen, so nothing jumps around. */}
+        <input
+          id="source-title"
+          aria-label="Title or name"
+          className={field}
+          value={values.sourceTitle}
+          onChange={(e) => set('sourceTitle', e.target.value)}
+          placeholder="Title or name (optional)"
+          list="title-suggestions"
+        />
+        <datalist id="title-suggestions">
+          {titleSuggestions.map((t) => (
+            <option key={t} value={t} />
+          ))}
+        </datalist>
       </div>
 
       {/* More details */}
