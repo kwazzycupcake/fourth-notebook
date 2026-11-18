@@ -5,28 +5,10 @@ import PageHeader from '../components/PageHeader'
 import { mailto } from '../config'
 import { usePageTitle } from '../lib/usePageTitle'
 import { useNotebook } from '../store/context'
-import { useSync, type SyncApi } from '../store/syncContext'
+import { useSync } from '../store/syncContext'
 
 /** `href` instead of `to` for links that leave the app, like email. */
 type Row = { to?: string; href?: string; title: string; note: string; badge?: ReactNode }
-
-function syncRow(sync: SyncApi): Row {
-  const row = { to: '/account', title: 'Sync' }
-  if (!sync.user) return { ...row, note: 'Keep the same words on your phone and every computer' }
-  const { status, pending } = sync
-  const label =
-    status === 'offline' ? 'Offline' : status === 'error' ? 'Needs attention' : status === 'syncing' || pending > 0 ? 'Syncing' : 'Synced'
-  return {
-    ...row,
-    note: sync.user.email ? `Signed in as ${sync.user.email}` : 'Signed in',
-    badge: (
-      <span className="flex items-center gap-1.5 text-sm text-muted">
-        <span aria-hidden className={`h-2 w-2 rounded-full ${label === 'Synced' ? 'bg-green' : 'border border-green'}`} />
-        {label}
-      </span>
-    ),
-  }
-}
 
 function backupNote(lastBackupAt: string | undefined): string {
   if (!lastBackupAt) return 'Save a copy of your notebook as a file'
@@ -81,26 +63,26 @@ export default function More() {
   const sync = useSync()
   const { notebook } = useNotebook()
 
-  const yourNotebook: Row[] = [
-    ...(sync.available ? [syncRow(sync)] : []),
+  const yourData: Row[] = [
     { to: '/backup', title: 'Backup & restore', note: backupNote(notebook.lastBackupAt) },
-  ]
-  const about: Row[] = [
-    { to: '/story', title: 'Our story', note: 'The first three vocabulary copies' },
     { to: '/privacy', title: 'Privacy', note: 'What is stored, where, and who can see it' },
   ]
   const help: Row[] = [
     { href: mailto('The Fourth Notebook: feedback'), title: 'Send feedback', note: 'Report a bug, share an idea or ask a question' },
   ]
+  const about: Row[] = [{ to: '/story', title: 'Our story', note: 'The first three vocabulary copies' }]
 
   return (
     <>
       <PageHeader title="More" />
 
       <div className="flex flex-col gap-8">
-        <Group title="Your notebook" rows={yourNotebook} />
+        {/* Sync lives in the account button at the top; on phones the story isn't in the bottom bar, so it's here. */}
+        <div className="md:hidden">
+          <Group title="About" rows={about} />
+        </div>
+        <Group title="Your data" rows={yourData} />
         <Group title="Help make it better" rows={help} />
-        <Group title="About" rows={about} />
       </div>
 
       <footer className="mt-14 flex flex-col items-center gap-4 text-center text-sm text-muted">

@@ -20,7 +20,7 @@ export default function Toast({
   }, [message, onClose, duration])
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-20 flex justify-center px-4 sm:bottom-8">
+    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-20 flex justify-center px-4 md:bottom-8">
       <div role="status" className="pointer-events-auto flex items-center gap-4 rounded-lg bg-ink px-4 py-3 text-paper shadow-lg">
         <span>{message}</span>
         {actionLabel && onAction && (

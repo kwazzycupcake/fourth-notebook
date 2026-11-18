@@ -83,7 +83,7 @@ export default function QuizQuestion({
       {/* Verdict and Next, right under the options so you never have to scroll for it */}
       {answered && (
         <>
-          <div ref={panel} className="flex scroll-mb-28 flex-wrap items-center justify-between gap-3 sm:scroll-mb-8" role="status">
+          <div ref={panel} className="flex scroll-mb-28 flex-wrap items-center justify-between gap-3 md:scroll-mb-8" role="status">
             <p className="font-display text-2xl font-semibold text-green">{correct ? 'Correct.' : 'Not quite.'}</p>
             <button ref={nextButton} type="button" className={btn.primary} onClick={onNext}>
               {isLast ? 'See results' : 'Next question'} →
