@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { defineConfig } from 'vite'
-import { copyFileSync } from 'node:fs'
+import { copyFileSync, mkdirSync } from 'node:fs'
 
 // GitHub Pages serves the app from https://<username>.github.io/<repo-name>/,
 // so every asset path starts with the repo name. If you rename the repo,
@@ -24,6 +24,12 @@ export default defineConfig({
       apply: 'build',
       closeBundle() {
         copyFileSync('dist/index.html', 'dist/404.html')
+        // The main pages also get a real file, so they load with a proper "200 OK".
+        // Google checks the privacy link, and link previews (Instagram, WhatsApp) skip 404s.
+        for (const page of ['library', 'add', 'quiz', 'more', 'story', 'privacy', 'backup', 'account']) {
+          mkdirSync(`dist/${page}`, { recursive: true })
+          copyFileSync('dist/index.html', `dist/${page}/index.html`)
+        }
       },
     },
     // The Home link is /fourth-notebook (no slash). GitHub Pages adds the slash
