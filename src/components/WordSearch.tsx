@@ -13,6 +13,12 @@ export default function WordSearch({
   disabled,
   inputRef,
   inNotebook,
+  id = 'lookup',
+  label = 'Word to look up',
+  placeholder = 'Type a word…',
+  autoFocus = true,
+  size = 'text-2xl',
+  enterKeyHint = 'search',
 }: {
   value: string
   onChange: (text: string) => void
@@ -22,6 +28,13 @@ export default function WordSearch({
   inputRef?: Ref<HTMLInputElement>
   /** True if the word is already saved, so the list can say so. */
   inNotebook: (word: string) => boolean
+  id?: string
+  label?: string
+  placeholder?: string
+  autoFocus?: boolean
+  /** Text size class for the box. */
+  size?: string
+  enterKeyHint?: 'search' | 'go'
 }) {
   const listId = useId()
   const [typed, setTyped] = useState('') // only what you typed triggers suggestions
@@ -81,13 +94,13 @@ export default function WordSearch({
 
   return (
     <div className="relative min-w-0 flex-1">
-      <label htmlFor="lookup" className="sr-only">
-        Word to look up
+      <label htmlFor={id} className="sr-only">
+        {label}
       </label>
       <input
-        id="lookup"
+        id={id}
         ref={inputRef}
-        className={`${field} font-display text-2xl`}
+        className={`${field} font-display ${size}`}
         value={value}
         onChange={(e) => {
           onChange(e.target.value)
@@ -97,13 +110,13 @@ export default function WordSearch({
         onKeyDown={onKeyDown}
         onBlur={close}
         onFocus={() => suggestions.length > 0 && typed === value && setOpen(true)}
-        placeholder="Type a word…"
-        autoFocus
+        placeholder={placeholder}
+        autoFocus={autoFocus}
         autoComplete="off"
         autoCapitalize="none"
         autoCorrect="off"
         spellCheck={false}
-        enterKeyHint="search"
+        enterKeyHint={enterKeyHint}
         disabled={disabled}
         role="combobox"
         aria-autocomplete="list"

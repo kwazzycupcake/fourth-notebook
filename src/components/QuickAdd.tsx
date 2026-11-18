@@ -1,33 +1,39 @@
-import { useState, type FormEvent } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
-import { btn, field } from './ui'
+import { wordKey } from '../lib/words'
+import { useNotebook } from '../store/context'
+import WordSearch from './WordSearch'
+import { btn } from './ui'
 
-/** One box on Home: type a word, press Enter, land on Add with it looked up. */
+/** One box on Home: type a word (with suggestions), press Enter, land on Add with it looked up. */
 export default function QuickAdd() {
   const [word, setWord] = useState('')
   const navigate = useNavigate()
+  const { words } = useNotebook()
+  const saved = useMemo(() => new Set(words.map((w) => wordKey(w.word))), [words])
 
+  const go = (w: string) => {
+    const t = w.trim()
+    if (t) navigate(`/add?word=${encodeURIComponent(t)}`)
+  }
   const submit = (e: FormEvent) => {
     e.preventDefault()
-    const w = word.trim()
-    if (w) navigate(`/add?word=${encodeURIComponent(w)}`)
+    go(word)
   }
 
   return (
     <form onSubmit={submit} className="flex gap-2">
-      <label htmlFor="quick-add" className="sr-only">
-        Add a word
-      </label>
-      <input
+      <WordSearch
         id="quick-add"
-        className={`${field} font-display text-xl`}
-        value={word}
-        onChange={(e) => setWord(e.target.value)}
+        label="Add a word"
         placeholder="Found a new word?"
-        autoCapitalize="none"
-        autoCorrect="off"
-        spellCheck={false}
+        size="text-xl"
+        autoFocus={false}
         enterKeyHint="go"
+        value={word}
+        onChange={setWord}
+        onPick={go}
+        inNotebook={(w) => saved.has(wordKey(w))}
       />
       <button type="submit" className={btn.primary} disabled={!word.trim()}>
         Add
