@@ -9,6 +9,7 @@ import More from './pages/More'
 import Story from './pages/Story'
 import Backup from './pages/Backup'
 import Account from './pages/Account'
+import Privacy from './pages/Privacy'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="story" element={<Story />} />
         <Route path="backup" element={<Backup />} />
         <Route path="account" element={<Account />} />
+        <Route path="privacy" element={<Privacy />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

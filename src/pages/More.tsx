@@ -1,72 +1,118 @@
-import { usePageTitle } from '../lib/usePageTitle'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import Illustration from '../components/Illustration'
 import PageHeader from '../components/PageHeader'
+import { usePageTitle } from '../lib/usePageTitle'
+import { useNotebook } from '../store/context'
 import { useSync, type SyncApi } from '../store/syncContext'
 
-function syncNote({ user, status, pending }: SyncApi): string {
-  if (!user) return 'Sign in to keep your words on every device'
-  if (status === 'offline') return 'Offline: changes will sync later'
-  if (status === 'error') return 'Sync needs attention'
-  if (status === 'syncing' || pending > 0) return 'Syncing…'
-  return `Synced${user.email ? ` as ${user.email}` : ''}`
+type Row = { to: string; title: string; note: string; badge?: ReactNode }
+
+function syncRow(sync: SyncApi): Row {
+  const row = { to: '/account', title: 'Sync' }
+  if (!sync.user) return { ...row, note: 'Keep the same words on your phone and every computer' }
+  const { status, pending } = sync
+  const label =
+    status === 'offline' ? 'Offline' : status === 'error' ? 'Needs attention' : status === 'syncing' || pending > 0 ? 'Syncing' : 'Synced'
+  return {
+    ...row,
+    note: sync.user.email ? `Signed in as ${sync.user.email}` : 'Signed in',
+    badge: (
+      <span className="flex items-center gap-1.5 text-sm text-muted">
+        <span aria-hidden className={`h-2 w-2 rounded-full ${label === 'Synced' ? 'bg-green' : 'border border-green'}`} />
+        {label}
+      </span>
+    ),
+  }
 }
 
-export default function More() {
-  usePageTitle('More')
-  const sync = useSync()
-  const links = [
-    ...(sync.available ? [{ to: '/account', title: 'Sync', note: syncNote(sync) }] : []),
-    { to: '/story', title: 'Our story', note: 'The first three vocabulary copies' },
-    { to: '/backup', title: 'Backup & restore', note: 'Keep a copy of your notebook as a file' },
-  ]
+function backupNote(lastBackupAt: string | undefined): string {
+  if (!lastBackupAt) return 'Save a copy of your notebook as a file'
+  const days = Math.floor((Date.now() - Date.parse(lastBackupAt)) / 86_400_000)
+  const when = days <= 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`
+  return `Last backup ${when}`
+}
+
+function Group({ title, rows }: { title: string; rows: Row[] }) {
   return (
-    <>
-      <PageHeader title="More" />
-      <ul className="flex flex-col">
-        {links.map((l) => (
-          <li key={l.to} className="border-b border-line">
-            <Link to={l.to} className="group flex items-baseline justify-between gap-4 py-4">
-              <span>
-                <span className="block font-display text-2xl font-semibold text-green">{l.title}</span>
-                <span className="text-muted">{l.note}</span>
+    <section className="flex flex-col gap-2">
+      <h2 className="smallcaps font-body text-sm font-normal text-muted">{title}</h2>
+      <ul className="overflow-hidden rounded-lg border border-line bg-card">
+        {rows.map((r) => (
+          <li key={r.to} className="border-t border-line first:border-t-0">
+            <Link to={r.to} className="group flex items-center justify-between gap-4 px-4 py-3.5 transition-colors hover:bg-paper-deep/60 sm:px-5">
+              <span className="min-w-0">
+                <span className="block font-display text-2xl font-semibold leading-tight text-green">{r.title}</span>
+                <span className="block truncate text-[15px] text-muted">{r.note}</span>
               </span>
-              <span aria-hidden className="text-green transition-transform group-hover:translate-x-1">→</span>
+              <span className="flex shrink-0 items-center gap-3">
+                {r.badge}
+                <span aria-hidden className="text-green transition-transform group-hover:translate-x-1">
+                  →
+                </span>
+              </span>
             </Link>
           </li>
         ))}
       </ul>
+    </section>
+  )
+}
 
-      <section className="mt-12 flex flex-col items-center gap-3 text-center text-sm text-muted">
-        <Illustration name="newspaper" className="w-24" decorative />
+const credit = 'underline underline-offset-2 hover:text-green'
+
+export default function More() {
+  usePageTitle('More')
+  const sync = useSync()
+  const { notebook } = useNotebook()
+
+  const yourNotebook: Row[] = [
+    ...(sync.available ? [syncRow(sync)] : []),
+    { to: '/backup', title: 'Backup & restore', note: backupNote(notebook.lastBackupAt) },
+  ]
+  const about: Row[] = [
+    { to: '/story', title: 'Our story', note: 'The first three vocabulary copies' },
+    { to: '/privacy', title: 'Privacy', note: 'What is stored, where, and who can see it' },
+  ]
+
+  return (
+    <>
+      <PageHeader title="More" />
+
+      <div className="flex flex-col gap-8">
+        <Group title="Your notebook" rows={yourNotebook} />
+        <Group title="About" rows={about} />
+      </div>
+
+      <footer className="mt-14 flex flex-col items-center gap-4 text-center text-sm text-muted">
+        <Illustration name="newspaper" className="w-20" decorative />
+        <p className="font-hand text-2xl text-green">He filled three. This is the fourth.</p>
         <p className="max-w-sm">
           {sync.user
             ? 'Your words are saved on this device and in your account, which only you can read.'
-            : `Your words are saved in this browser only, never on a server${sync.available ? ', unless you sign in to sync' : ''}. Download a backup now and then.`}
+            : 'Your words are saved in this browser' +
+              (sync.available ? ' until you sign in to sync.' : '. Download a backup now and then.')}
         </p>
         <p className="max-w-sm">
-          The app counts visits anonymously with{' '}
-          <a href="https://www.goatcounter.com" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-green">
-            GoatCounter
-          </a>
-          : no cookies, and never the words you save.
-        </p>
-        <p className="max-w-sm">
-          Definitions come from the{' '}
-          <a href="https://dictionaryapi.dev" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-green">
+          Definitions from the{' '}
+          <a href="https://dictionaryapi.dev" target="_blank" rel="noreferrer" className={credit}>
             Free Dictionary API
-          </a>
-          , based on{' '}
-          <a href="https://en.wiktionary.org" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-green">
-            Wiktionary
           </a>{' '}
-          (CC BY-SA). Word suggestions come from{' '}
-          <a href="https://www.datamuse.com/api/" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-green">
+          (
+          <a href="https://en.wiktionary.org" target="_blank" rel="noreferrer" className={credit}>
+            Wiktionary
+          </a>
+          , CC BY-SA). Suggestions from{' '}
+          <a href="https://www.datamuse.com/api/" target="_blank" rel="noreferrer" className={credit}>
             Datamuse
+          </a>
+          . Anonymous visit counts by{' '}
+          <a href="https://www.goatcounter.com" target="_blank" rel="noreferrer" className={credit}>
+            GoatCounter
           </a>
           .
         </p>
-      </section>
+      </footer>
     </>
   )
 }

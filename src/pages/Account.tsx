@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 import { ButtonLink } from '../components/Button'
 import Illustration from '../components/Illustration'
 import PageHeader from '../components/PageHeader'
@@ -214,6 +215,11 @@ function Privacy() {
         <li>Without signing in, everything stays in this browser, just as before.</li>
         <li>You can delete your account, and everything in it, at any time.</li>
       </ul>
+      <p className="text-[15px]">
+        <Link to="/privacy" className="text-green underline underline-offset-2">
+          Read the full privacy policy →
+        </Link>
+      </p>
     </section>
   )
 }

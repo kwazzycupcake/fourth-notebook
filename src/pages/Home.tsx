@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { ButtonLink } from '../components/Button'
 import Illustration from '../components/Illustration'
 import QuickAdd from '../components/QuickAdd'
+import StoryTeaser from '../components/StoryTeaser'
 import { POS_SHORT, describeSource } from '../lib/labels'
 import { MIN_WORDS } from '../lib/quiz'
 import { computeStats, wordOfTheDay } from '../lib/stats'
@@ -44,12 +45,8 @@ export default function Home() {
         <div className="mx-auto w-full max-w-md">
           <QuickAdd />
         </div>
-        <p className="text-center font-hand text-2xl text-green">
-          He filled three. This is the fourth.{' '}
-          <Link to="/story" className="whitespace-nowrap font-body text-base underline underline-offset-2">
-            Read the story
-          </Link>
-        </p>
+        {/* One drawing per screen: the book is already above. */}
+        <StoryTeaser drawing={false} />
       </div>
     )
   }
@@ -143,11 +140,7 @@ export default function Home() {
         </ul>
       </section>
 
-      <p className="text-center text-sm text-muted">
-        <Link to="/story" className="underline-offset-2 hover:text-green hover:underline">
-          Why “the fourth notebook”?
-        </Link>
-      </p>
+      <StoryTeaser />
     </div>
   )
 }
