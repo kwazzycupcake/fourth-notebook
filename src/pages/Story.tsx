@@ -22,8 +22,8 @@ export default function Story() {
       </p>
 
       <p>
-        He passed those copies down to me and my brother, and made sure we used them. When he came home from the office,
-        there would be a question waiting for us:
+        He passed those copies down to me and my brother, and made sure we used them. When he came back from the office,
+        or on weekends, he would test us:
       </p>
 
       <p className="py-2 text-center font-hand text-3xl leading-snug text-green">
