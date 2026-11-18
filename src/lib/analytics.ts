@@ -8,10 +8,10 @@
   - To stop counting your own visits, open the site once with
     #toggle-goatcounter at the end of the address.
 
-  Dashboard: https://fourthnotebook.goatcounter.com
+  Dashboard: https://himanshi.goatcounter.com
 */
 
-const ENDPOINT = 'https://fourthnotebook.goatcounter.com/count'
+const ENDPOINT = 'https://himanshi.goatcounter.com/count'
 const SCRIPT = 'https://gc.zgo.at/count.js'
 
 type GoatCounter = {
