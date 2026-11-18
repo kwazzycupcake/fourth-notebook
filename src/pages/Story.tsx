@@ -13,10 +13,10 @@ export default function Story() {
       </div>
 
       <Illustration name="notebooks" className="mx-auto w-44" />
-      <h1 className="text-center text-5xl">The first three notebooks</h1>
+      <h1 className="text-center text-5xl">The first three vocabulary copies</h1>
 
       <p>
-        When I was little, my father kept notebooks of words. He didn't copy them out of a dictionary. They were words he
+        When I was little, my father kept what he called his “vocabulary copies”. The words in them didn't come from a dictionary. They were words he
         had met that day, in the newspaper or on the news, written down one by one with their meanings. And then he did
         what most of us never do: he went back to them, again and again, until they were his.
       </p>
@@ -45,7 +45,7 @@ export default function Story() {
       </p>
 
       <p className="mt-4 border-t border-line pt-8 text-center font-display text-3xl font-semibold leading-snug text-green">
-        <span className="block text-balance">He filled three notebooks.</span>
+        <span className="block text-balance">He filled three vocabulary copies.</span>
         <span className="block text-balance">This app is my fourth.</span>
       </p>
 

@@ -6,7 +6,7 @@ export type IllustrationName = 'book' | 'notebooks' | 'pen' | 'newspaper' | 'tea
 
 const labels: Record<IllustrationName, string> = {
   book: 'An open book',
-  notebooks: 'A stack of three notebooks',
+  notebooks: 'A stack of three vocabulary copies',
   pen: 'A fountain pen',
   newspaper: 'A newspaper with one word circled',
   tea: 'A cup of tea',
@@ -29,7 +29,7 @@ function Drawing({ name }: { name: IllustrationName }) {
     case 'notebooks':
       return (
         <>
-          {/* His three notebooks */}
+          {/* His three vocabulary copies */}
           <rect x="20" y="66" width="80" height="14" rx="2" style={fill} />
           <rect x="26" y="52" width="74" height="14" rx="2" style={fill} />
           <rect x="18" y="38" width="78" height="14" rx="2" style={fill} />
