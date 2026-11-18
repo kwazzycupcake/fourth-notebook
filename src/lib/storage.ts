@@ -5,6 +5,7 @@
 */
 import { STORAGE_KEY } from '../config'
 import type { Notebook, QuizSession, SyncMeta } from './types'
+import { extractBackupData, renderBackupPage } from './backupPage'
 import { normalizeWord, wordKey } from './words'
 
 type Reader = Pick<Storage, 'getItem'>
@@ -108,15 +109,17 @@ export function saveNotebook(
 
 // ---------- Backup files ----------
 
+/**
+ * The backup file: a readable web page with the data tucked inside.
+ * See backupPage.ts.
+ */
 export function serializeBackup(notebook: Notebook, now = new Date()): string {
-  // Sync bookkeeping belongs to this device, not the backup.
-  const { sync: _sync, ...rest } = notebook
-  return JSON.stringify({ app: 'fourth-notebook', exportedAt: now.toISOString(), ...rest }, null, 2)
+  return renderBackupPage(notebook, now)
 }
 
 export function backupFilename(now = new Date()): string {
   const d = now.toISOString().slice(0, 10)
-  return `fourth-notebook-backup-${d}.json`
+  return `fourth-notebook-backup-${d}.html`
 }
 
 export type ParsedBackup =
@@ -124,11 +127,14 @@ export type ParsedBackup =
   | { ok: false; error: string }
 
 export function parseBackup(text: string): ParsedBackup {
+  // Backups are web pages now; older ones were plain .json files. Read both.
+  const json = text.trimStart().startsWith('<') ? extractBackupData(text) : text
   let raw: unknown
   try {
-    raw = JSON.parse(text)
+    if (json === null) throw new Error('no data')
+    raw = JSON.parse(json)
   } catch {
-    return { ok: false, error: "This file isn't a notebook backup. Choose the .json file you downloaded from Backup & restore." }
+    return { ok: false, error: "This file isn't a notebook backup. Choose the backup file you downloaded from Backup & restore." }
   }
   const result = normalizeNotebook(raw)
   if (!result) {

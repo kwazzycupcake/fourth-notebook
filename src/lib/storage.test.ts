@@ -90,7 +90,29 @@ describe('backup files', () => {
     }
   })
 
+  it('writes a page people can read, that still restores exactly', () => {
+    const nb = notebookWith({
+      word: 'tirade',
+      meanings: ['a long angry speech </script><b>'],
+      example: 'Tom & Jerry',
+      source: { type: 'book', title: 'Wolf Hall' },
+    })
+    const page = serializeBackup(nb)
+    expect(page).toMatch(/^<!doctype html>/)
+    expect(page).toContain('<h3>tirade') // readable
+    expect(page).toContain('a long angry speech &lt;/script&gt;') // escaped in the visible part
+    const parsed = parseBackup(page)
+    expect(parsed.ok && parsed.notebook.words).toEqual(nb.words) // and exact in the hidden part
+  })
+
+  it('still restores the older .json backups', () => {
+    const nb = notebookWith({ word: 'vie', meanings: ['to compete'] })
+    const old = JSON.stringify({ app: 'fourth-notebook', ...nb })
+    expect(parseBackup(old).ok && (parseBackup(old) as { notebook: { words: unknown[] } }).notebook.words).toEqual(nb.words)
+  })
+
   it('explains what went wrong with a bad file', () => {
+    expect(parseBackup('<html><body>Some other page</body></html>').ok).toBe(false)
     expect(parseBackup('hello').ok).toBe(false)
     expect(parseBackup('{"something": "else"}').ok).toBe(false)
   })
