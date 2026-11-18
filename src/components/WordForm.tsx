@@ -205,13 +205,16 @@ export default function WordForm({
           value={values.sourceTitle}
           onChange={(e) => set('sourceTitle', e.target.value)}
           placeholder="Title or name (optional)"
-          list="title-suggestions"
+          // Past titles pop up as you type; only attach the list when there are some.
+          list={titleSuggestions.length > 0 ? 'title-suggestions' : undefined}
         />
-        <datalist id="title-suggestions">
-          {titleSuggestions.map((t) => (
-            <option key={t} value={t} />
-          ))}
-        </datalist>
+        {titleSuggestions.length > 0 && (
+          <datalist id="title-suggestions">
+            {titleSuggestions.map((t) => (
+              <option key={t} value={t} />
+            ))}
+          </datalist>
+        )}
       </div>
 
       {/* More details */}

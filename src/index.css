@@ -40,6 +40,11 @@
     outline-offset: 2px;
     border-radius: 4px;
   }
+  /* Chrome adds a dropdown arrow to text boxes with suggestions. It looked like a
+     broken button, so hide it; the suggestions still appear as you type. */
+  input[list]::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation: none !important;
