@@ -17,11 +17,14 @@ export default function Story() {
 
       <p>
         When I was little, my father kept what he called his “vocabulary copies”. The words in them didn't come from a dictionary. They were words he
-        had met that day, in the newspaper or on the news, written down one by one with their meanings. And then he did
-        what most of us never do: he went back to them, again and again, until they were his.
+        had met that day, in the newspaper or on the news, written down one by one with their meanings. And he didn't
+        stop at writing them down. He kept coming back to them.
       </p>
 
-      <p>He didn't keep them to himself, either. He made us learn them too. When he came home from the office, there would be a question waiting for us:</p>
+      <p>
+        He passed those copies down to me and my brother, and made sure we used them. When he came home from the office,
+        there would be a question waiting for us:
+      </p>
 
       <p className="py-2 text-center font-hand text-3xl leading-snug text-green">
         “So, what does <span className="underline decoration-1 underline-offset-4">ubiquitous</span> mean?”
