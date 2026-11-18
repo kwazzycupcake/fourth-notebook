@@ -5,7 +5,7 @@ import EmptyState from '../components/EmptyState'
 import PageHeader from '../components/PageHeader'
 import Toast from '../components/Toast'
 import WordEntry from '../components/WordEntry'
-import { btn, field, select } from '../components/ui'
+import { btn, chipToggle, field, select } from '../components/ui'
 import { SOURCE_LABELS } from '../lib/labels'
 import {
   ALPHABET,
@@ -199,9 +199,7 @@ export default function Library() {
             type="button"
             aria-pressed={filters.favouritesOnly}
             onClick={() => setFilter({ favouritesOnly: !filters.favouritesOnly })}
-            className={`rounded-full border px-3 py-1.5 text-[15px] transition-colors ${
-              filters.favouritesOnly ? 'border-green bg-green text-paper' : 'border-line bg-card hover:border-green'
-            }`}
+            className={chipToggle(filters.favouritesOnly)}
           >
             ★ Favourites
           </button>

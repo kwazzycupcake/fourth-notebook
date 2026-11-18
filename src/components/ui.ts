@@ -16,4 +16,10 @@ export const label = 'smallcaps text-sm text-muted'
 
 /** Compact dropdown for filter rows. */
 export const select =
-  'max-w-full rounded-md border border-line bg-card px-2.5 py-1.5 text-[15px] text-ink transition-colors hover:border-green focus:border-green focus:outline-none'
+  'select-chevron h-10 max-w-full rounded-md border border-line bg-card pl-3 text-[15px] text-ink transition-colors hover:border-green focus:border-green focus:outline-none'
+
+/** Toggle button that sits in the same row as `select`. */
+export const chipToggle = (on: boolean) =>
+  `inline-flex h-10 items-center gap-1.5 rounded-full border px-3.5 text-[15px] transition-colors ${
+    on ? 'border-green bg-green text-paper' : 'border-line bg-card hover:border-green'
+  }`
