@@ -24,7 +24,7 @@ export default function Home() {
 
   const masthead = (
     <div className="flex justify-between border-b border-ink pb-2 text-sm">
-      <span className="smallcaps">Notebook No. 6</span>
+      <span className="smallcaps">Notebook No. 4</span>
       <span className="smallcaps">{today}</span>
     </div>
   )
@@ -45,7 +45,7 @@ export default function Home() {
           <QuickAdd />
         </div>
         <p className="text-center font-hand text-2xl text-green">
-          He filled five. This is the sixth.{' '}
+          He filled three. This is the fourth.{' '}
           <Link to="/story" className="whitespace-nowrap font-body text-base underline underline-offset-2">
             Read the story
           </Link>
@@ -145,7 +145,7 @@ export default function Home() {
 
       <p className="text-center text-sm text-muted">
         <Link to="/story" className="underline-offset-2 hover:text-green hover:underline">
-          Why “the sixth notebook”?
+          Why “the fourth notebook”?
         </Link>
       </p>
     </div>

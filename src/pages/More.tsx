@@ -4,7 +4,7 @@ import Illustration from '../components/Illustration'
 import PageHeader from '../components/PageHeader'
 
 const links = [
-  { to: '/story', title: 'Our story', note: 'The first five notebooks' },
+  { to: '/story', title: 'Our story', note: 'The first three notebooks' },
   { to: '/backup', title: 'Backup & restore', note: 'Keep a copy of your notebook as a file' },
 ]
 

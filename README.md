@@ -1,6 +1,6 @@
-# The Sixth Notebook
+# The Fourth Notebook
 
-A personal dictionary that quizzes you back. My father filled five notebooks with words he found in the newspaper; this is the sixth.
+A personal dictionary that quizzes you back. My father filled three notebooks with words he found in the newspaper; this is the fourth.
 
 ## Run it locally
 

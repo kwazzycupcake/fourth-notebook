@@ -24,7 +24,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png}', '**/*-latin-[0-9]*.woff2'],
       },
       manifest: {
-        name: 'The Sixth Notebook',
+        name: 'The Fourth Notebook',
         short_name: 'Notebook',
         description: 'A personal dictionary that quizzes you back.',
         theme_color: '#2E4A3B',

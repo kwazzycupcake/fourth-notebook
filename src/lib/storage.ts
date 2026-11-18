@@ -94,12 +94,12 @@ export function saveNotebook(
 // ---------- Backup files ----------
 
 export function serializeBackup(notebook: Notebook, now = new Date()): string {
-  return JSON.stringify({ app: 'sixth-notebook', exportedAt: now.toISOString(), ...notebook }, null, 2)
+  return JSON.stringify({ app: 'fourth-notebook', exportedAt: now.toISOString(), ...notebook }, null, 2)
 }
 
 export function backupFilename(now = new Date()): string {
   const d = now.toISOString().slice(0, 10)
-  return `sixth-notebook-backup-${d}.json`
+  return `fourth-notebook-backup-${d}.json`
 }
 
 export type ParsedBackup =

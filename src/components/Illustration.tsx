@@ -1,12 +1,12 @@
 /*
-  The six line drawings. Rules: one line weight, accent colour only,
+  The line drawings. Rules: one line weight, accent colour only,
   pages filled with the card colour, at most one per screen.
 */
 export type IllustrationName = 'book' | 'notebooks' | 'pen' | 'newspaper' | 'tea' | 'sparkle'
 
 const labels: Record<IllustrationName, string> = {
   book: 'An open book',
-  notebooks: 'A stack of five notebooks',
+  notebooks: 'A stack of three notebooks',
   pen: 'A fountain pen',
   newspaper: 'A newspaper with one word circled',
   tea: 'A cup of tea',
@@ -29,14 +29,13 @@ function Drawing({ name }: { name: IllustrationName }) {
     case 'notebooks':
       return (
         <>
-          <rect x="22" y="72" width="76" height="10" rx="2" style={fill} />
-          <rect x="27" y="62" width="72" height="10" rx="2" style={fill} />
-          <rect x="19" y="52" width="75" height="10" rx="2" style={fill} />
-          <rect x="25" y="42" width="71" height="10" rx="2" style={fill} />
-          <rect x="22" y="32" width="73" height="10" rx="2" style={fill} />
-          <path d="M34 72v10M39 62v10M31 52v10M37 42v10M34 32v10" />
-          <path d="M44 25L88 19M88 19L94 18.5L89 22.5Z" />
-          <path d="M104 10v10M99 15h10" />
+          {/* His three notebooks */}
+          <rect x="20" y="66" width="80" height="14" rx="2" style={fill} />
+          <rect x="26" y="52" width="74" height="14" rx="2" style={fill} />
+          <rect x="18" y="38" width="78" height="14" rx="2" style={fill} />
+          <path d="M33 66v14M39 52v14M31 38v14" />
+          <path d="M44 31L88 25M88 25L94 24.5L89 28.5Z" />
+          <path d="M104 14v10M99 19h10" />
         </>
       )
     case 'pen':
