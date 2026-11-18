@@ -35,6 +35,17 @@
     line-height: 1.05;
     text-wrap: balance;
   }
+  /* Selected text: cream on forest green, like the rest of the app. */
+  ::selection {
+    background-color: var(--color-green);
+    color: var(--color-paper);
+  }
+  /* ...flipped on things that are already green (buttons, the right quiz answer), so it still shows. */
+  .bg-green::selection,
+  .bg-green ::selection {
+    background-color: var(--color-paper);
+    color: var(--color-green);
+  }
   :focus-visible {
     outline: 2px solid var(--color-green);
     outline-offset: 2px;
