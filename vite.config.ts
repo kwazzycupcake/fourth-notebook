@@ -26,6 +26,29 @@ export default defineConfig({
         copyFileSync('dist/index.html', 'dist/404.html')
       },
     },
+    // The Home link is /fourth-notebook (no slash). GitHub Pages adds the slash
+    // itself; the local server doesn't, so add it here too.
+    {
+      name: 'add-trailing-slash',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url === base.slice(0, -1) || req.url?.startsWith(`${base.slice(0, -1)}?`)) {
+            res.writeHead(302, { Location: req.url.replace(base.slice(0, -1), base) }).end()
+            return
+          }
+          next()
+        })
+      },
+      configurePreviewServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url === base.slice(0, -1)) {
+            res.writeHead(302, { Location: base }).end()
+            return
+          }
+          next()
+        })
+      },
+    },
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
