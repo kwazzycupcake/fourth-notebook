@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Then open http://localhost:5173/sixth-notebook/
+Then open http://localhost:5173/fourth-notebook/
 
 To try it on your phone, connect it to the same Wi-Fi and open the "Network" address that `npm run dev` prints.
 

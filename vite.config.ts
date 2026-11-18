@@ -7,7 +7,7 @@ import { defineConfig } from 'vite'
 // GitHub Pages serves the app from https://<username>.github.io/<repo-name>/,
 // so every asset path starts with the repo name. If you rename the repo,
 // change this line to match.
-const base = '/sixth-notebook/'
+const base = '/fourth-notebook/'
 
 export default defineConfig({
   base,
