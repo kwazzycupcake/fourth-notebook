@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import PageHeader from '../components/PageHeader'
+import { btn } from '../components/ui'
+import { CONTACT_EMAIL, mailto } from '../config'
 import { usePageTitle } from '../lib/usePageTitle'
 
 // Plain-language privacy policy. Keep it true: update it whenever the app starts
@@ -32,7 +34,7 @@ export default function Privacy() {
           <ul className="flex list-disc flex-col gap-1 pl-5">
             <li>Your words are yours. Nothing is sold, shared for advertising, or used to train anything.</li>
             <li>Without signing in, your notebook never leaves this browser.</li>
-            <li>If you sign in, your notebook is stored in a database only your account can read.</li>
+            <li>If you sign in, your notebook is stored securely and no other user can see it.</li>
             <li>You can delete everything, whenever you like.</li>
           </ul>
         </section>
@@ -59,12 +61,12 @@ export default function Privacy() {
             <a href="https://supabase.com/privacy" target="_blank" rel="noreferrer" className={ext}>
               Supabase
             </a>
-            , a database service, on servers in Tokyo, Japan. The database only gives a notebook to the account it
-            belongs to, so other people using the app can never see yours.
+            , a database service, on servers in Tokyo, Japan. Each notebook is locked to the account it belongs to, so
+            other people using the app can never see yours.
           </p>
           <p>
-            One honest caveat: as the person who runs the app, I can see the database through Supabase's dashboard.
-            I won't look at your notebook unless you ask me to help fix a problem with it.
+            Your data is used only to run the app: to keep your devices in sync and, if you ask for help, to look into
+            a problem. It is never sold or shared with anyone else.
           </p>
         </Section>
 
@@ -123,16 +125,24 @@ export default function Privacy() {
           </ul>
         </Section>
 
-        <Section title="Questions">
+        <section id="feedback" className="flex scroll-mt-20 flex-col gap-3 rounded-lg border border-line bg-card p-5">
+          <h2 className="text-3xl">Feedback, bugs and questions</h2>
           <p>
-            This is a small personal project, shared with friends and family. If you have a question about your data,
-            ask the person who shared it with you, or open an issue on{' '}
-            <a href="https://github.com/kwazzycupcake/fourth-notebook/issues" target="_blank" rel="noreferrer" className={ext}>
-              GitHub
-            </a>
-            . If anything here changes, this page will say so, with a new date at the top.
+            The Fourth Notebook is a one-person project, and it gets better with your help. Found a bug? Have an idea,
+            or a question about the app or your data? I'd love to hear it.
           </p>
-        </Section>
+          <div>
+            <a href={mailto('The Fourth Notebook: feedback')} className={btn.primary}>
+              Email me
+            </a>
+          </div>
+          <p className="text-[15px] text-muted">
+            Or write to <a href={mailto('The Fourth Notebook')} className={ext}>{CONTACT_EMAIL}</a>. For a bug, a
+            screenshot and the device you were using help a lot.
+          </p>
+        </section>
+
+        <p className="text-[15px] text-muted">If anything on this page changes, it will say so, with a new date at the top.</p>
       </div>
     </>
   )

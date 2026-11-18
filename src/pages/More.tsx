@@ -2,11 +2,13 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import Illustration from '../components/Illustration'
 import PageHeader from '../components/PageHeader'
+import { mailto } from '../config'
 import { usePageTitle } from '../lib/usePageTitle'
 import { useNotebook } from '../store/context'
 import { useSync, type SyncApi } from '../store/syncContext'
 
-type Row = { to: string; title: string; note: string; badge?: ReactNode }
+/** `href` instead of `to` for links that leave the app, like email. */
+type Row = { to?: string; href?: string; title: string; note: string; badge?: ReactNode }
 
 function syncRow(sync: SyncApi): Row {
   const row = { to: '/account', title: 'Sync' }
@@ -39,8 +41,8 @@ function Group({ title, rows }: { title: string; rows: Row[] }) {
       <h2 className="smallcaps font-body text-sm font-normal text-muted">{title}</h2>
       <ul className="overflow-hidden rounded-lg border border-line bg-card">
         {rows.map((r) => (
-          <li key={r.to} className="border-t border-line first:border-t-0">
-            <Link to={r.to} className="group flex items-center justify-between gap-4 px-4 py-3.5 transition-colors hover:bg-paper-deep/60 sm:px-5">
+          <li key={r.title} className="border-t border-line first:border-t-0">
+            <RowLink row={r}>
               <span className="min-w-0">
                 <span className="block font-display text-2xl font-semibold leading-tight text-green">{r.title}</span>
                 <span className="block truncate text-[15px] text-muted">{r.note}</span>
@@ -51,11 +53,24 @@ function Group({ title, rows }: { title: string; rows: Row[] }) {
                   →
                 </span>
               </span>
-            </Link>
+            </RowLink>
           </li>
         ))}
       </ul>
     </section>
+  )
+}
+
+function RowLink({ row, children }: { row: Row; children: ReactNode }) {
+  const cls = 'group flex items-center justify-between gap-4 px-4 py-3.5 transition-colors hover:bg-paper-deep/60 sm:px-5'
+  return row.href ? (
+    <a href={row.href} className={cls}>
+      {children}
+    </a>
+  ) : (
+    <Link to={row.to ?? '/'} className={cls}>
+      {children}
+    </Link>
   )
 }
 
@@ -74,6 +89,9 @@ export default function More() {
     { to: '/story', title: 'Our story', note: 'The first three vocabulary copies' },
     { to: '/privacy', title: 'Privacy', note: 'What is stored, where, and who can see it' },
   ]
+  const help: Row[] = [
+    { href: mailto('The Fourth Notebook: feedback'), title: 'Send feedback', note: 'Report a bug, share an idea or ask a question' },
+  ]
 
   return (
     <>
@@ -81,6 +99,7 @@ export default function More() {
 
       <div className="flex flex-col gap-8">
         <Group title="Your notebook" rows={yourNotebook} />
+        <Group title="Help make it better" rows={help} />
         <Group title="About" rows={about} />
       </div>
 
@@ -89,7 +108,7 @@ export default function More() {
         <p className="font-hand text-2xl text-green">He filled three. This is the fourth.</p>
         <p className="max-w-sm">
           {sync.user
-            ? 'Your words are saved on this device and in your account, which only you can read.'
+            ? 'Your words are saved on this device and in your account.'
             : 'Your words are saved in this browser' +
               (sync.available ? ' until you sign in to sync.' : '. Download a backup now and then.')}
         </p>

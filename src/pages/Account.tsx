@@ -209,8 +209,8 @@ function Privacy() {
         <li>Your words, meanings, notes and quiz results, so every device has them.</li>
         <li>Your name and email from Google, only to know it's you. Never your Google password.</li>
         <li>
-          Only you can read your notebook. The database refuses anyone else's requests, and nothing is sold, shared or
-          shown to advertisers.
+          No other user can see your notebook: each one is locked to its own account. Nothing is sold, shared or shown
+          to advertisers.
         </li>
         <li>Without signing in, everything stays in this browser, just as before.</li>
         <li>You can delete your account, and everything in it, at any time.</li>

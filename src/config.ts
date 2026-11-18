@@ -4,3 +4,9 @@ export const APP_NAME = 'The Fourth Notebook'
 // Browser storage is shared by every GitHub Pages project under the same
 // username, so the key is prefixed to avoid collisions.
 export const STORAGE_KEY = 'sixth-notebook.v1'
+
+// Where feedback, bug reports and questions go. Shown on the Privacy and More pages.
+export const CONTACT_EMAIL = 'himanshiprakash24@gmail.com'
+
+/** A mailto: link with a subject filled in. */
+export const mailto = (subject: string) => `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}`
