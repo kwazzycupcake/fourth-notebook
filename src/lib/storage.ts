@@ -4,7 +4,7 @@
   means changing this file and nothing else.
 */
 import { STORAGE_KEY } from '../config'
-import type { Notebook, QuizSession } from './types'
+import type { Notebook, QuizSession, SyncMeta } from './types'
 import { normalizeWord, wordKey } from './words'
 
 type Reader = Pick<Storage, 'getItem'>
@@ -22,7 +22,7 @@ export function emptyNotebook(): Notebook {
   return { version: 1, words: [], quizzes: [], settings: {} }
 }
 
-function normalizeQuiz(raw: unknown): QuizSession | null {
+export function normalizeQuiz(raw: unknown): QuizSession | null {
   if (!raw || typeof raw !== 'object') return null
   const r = raw as Record<string, unknown>
   if (typeof r.id !== 'string' || typeof r.date !== 'string' || !Array.isArray(r.answers)) return null
@@ -64,8 +64,23 @@ export function normalizeNotebook(raw: unknown): { notebook: Notebook; skipped: 
 
   const settings = r.settings && typeof r.settings === 'object' ? (r.settings as Notebook['settings']) : {}
   const lastBackupAt = typeof r.lastBackupAt === 'string' ? r.lastBackupAt : undefined
+  const sync = normalizeSync(r.sync)
 
-  return { notebook: { version: 1, words, quizzes, settings, lastBackupAt }, skipped }
+  return { notebook: { version: 1, words, quizzes, settings, lastBackupAt, ...(sync && { sync }) }, skipped }
+}
+
+function normalizeSync(raw: unknown): SyncMeta | undefined {
+  if (!raw || typeof raw !== 'object') return undefined
+  const r = raw as Record<string, unknown>
+  if (typeof r.userId !== 'string' || !r.words || typeof r.words !== 'object') return undefined
+  const words: Record<string, string> = {}
+  for (const [id, fp] of Object.entries(r.words as Record<string, unknown>)) if (typeof fp === 'string') words[id] = fp
+  return {
+    userId: r.userId,
+    lastPulledAt: typeof r.lastPulledAt === 'string' ? r.lastPulledAt : undefined,
+    words,
+    quizzes: Array.isArray(r.quizzes) ? r.quizzes.filter((q): q is string => typeof q === 'string') : [],
+  }
 }
 
 export function loadNotebook(storage: Reader | undefined = browserStorage()): Notebook {
@@ -94,7 +109,9 @@ export function saveNotebook(
 // ---------- Backup files ----------
 
 export function serializeBackup(notebook: Notebook, now = new Date()): string {
-  return JSON.stringify({ app: 'fourth-notebook', exportedAt: now.toISOString(), ...notebook }, null, 2)
+  // Sync bookkeeping belongs to this device, not the backup.
+  const { sync: _sync, ...rest } = notebook
+  return JSON.stringify({ app: 'fourth-notebook', exportedAt: now.toISOString(), ...rest }, null, 2)
 }
 
 export function backupFilename(now = new Date()): string {
@@ -118,9 +135,10 @@ export function parseBackup(text: string): ParsedBackup {
     return { ok: false, error: "This file doesn't contain any notebook words. Choose a backup downloaded from this app." }
   }
   const exportedAt = (raw as Record<string, unknown>).exportedAt
+  const { sync: _sync, ...notebook } = result.notebook
   return {
     ok: true,
-    notebook: result.notebook,
+    notebook,
     skipped: result.skipped,
     exportedAt: typeof exportedAt === 'string' ? exportedAt : undefined,
   }

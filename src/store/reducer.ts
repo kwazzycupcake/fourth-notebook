@@ -2,6 +2,7 @@
   Every change to the notebook goes through here.
   Timestamps come in with the action so this stays predictable and easy to test.
 */
+import { applyRemote, markPushed, type PendingChanges, type RemoteQuiz, type RemoteWord } from '../lib/sync'
 import type { Notebook, QuizSession, Source, Word, WordInput } from '../lib/types'
 
 export type Action =
@@ -11,7 +12,12 @@ export type Action =
   | { type: 'restoreWord'; word: Word; index: number }
   | { type: 'toggleFavourite'; id: string; at: string }
   | { type: 'recordQuiz'; session: QuizSession }
+  /** Swap in different contents (e.g. a restored backup), keeping this device's sync state. */
   | { type: 'replace'; notebook: Notebook }
+  /** Load exactly this, sync state included (another tab changed it, or you signed out). */
+  | { type: 'load'; notebook: Notebook }
+  | { type: 'applyRemote'; userId: string; words: RemoteWord[]; quizzes: RemoteQuiz[] }
+  | { type: 'markPushed'; userId: string; pushed: PendingChanges }
   | { type: 'markBackedUp'; at: string }
   | { type: 'setLastSource'; source: Source | undefined }
 
@@ -67,8 +73,19 @@ export function reducer(n: Notebook, action: Action): Notebook {
       }
     }
 
-    case 'replace':
+    case 'replace': {
+      const { sync: _ignored, ...contents } = action.notebook
+      return n.sync ? { ...contents, sync: n.sync } : contents
+    }
+
+    case 'load':
       return action.notebook
+
+    case 'applyRemote':
+      return applyRemote(n, action.userId, action.words, action.quizzes)
+
+    case 'markPushed':
+      return markPushed(n, action.userId, action.pushed)
 
     case 'markBackedUp':
       return { ...n, lastBackupAt: action.at }

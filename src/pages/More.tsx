@@ -2,14 +2,24 @@ import { usePageTitle } from '../lib/usePageTitle'
 import { Link } from 'react-router'
 import Illustration from '../components/Illustration'
 import PageHeader from '../components/PageHeader'
+import { useSync, type SyncApi } from '../store/syncContext'
 
-const links = [
-  { to: '/story', title: 'Our story', note: 'The first three vocabulary copies' },
-  { to: '/backup', title: 'Backup & restore', note: 'Keep a copy of your notebook as a file' },
-]
+function syncNote({ user, status, pending }: SyncApi): string {
+  if (!user) return 'Sign in to keep your words on every device'
+  if (status === 'offline') return 'Offline: changes will sync later'
+  if (status === 'error') return 'Sync needs attention'
+  if (status === 'syncing' || pending > 0) return 'Syncing…'
+  return `Synced${user.email ? ` as ${user.email}` : ''}`
+}
 
 export default function More() {
   usePageTitle('More')
+  const sync = useSync()
+  const links = [
+    ...(sync.available ? [{ to: '/account', title: 'Sync', note: syncNote(sync) }] : []),
+    { to: '/story', title: 'Our story', note: 'The first three vocabulary copies' },
+    { to: '/backup', title: 'Backup & restore', note: 'Keep a copy of your notebook as a file' },
+  ]
   return (
     <>
       <PageHeader title="More" />
@@ -30,7 +40,9 @@ export default function More() {
       <section className="mt-12 flex flex-col items-center gap-3 text-center text-sm text-muted">
         <Illustration name="newspaper" className="w-24" decorative />
         <p className="max-w-sm">
-          Your words are saved in this browser only, never on a server. Download a backup now and then.
+          {sync.user
+            ? 'Your words are saved on this device and in your account, which only you can read.'
+            : `Your words are saved in this browser only, never on a server${sync.available ? ', unless you sign in to sync' : ''}. Download a backup now and then.`}
         </p>
         <p className="max-w-sm">
           The app counts visits anonymously with{' '}

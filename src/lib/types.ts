@@ -59,10 +59,25 @@ export type Settings = {
   lastSource?: Source
 }
 
+/**
+ * What this device last agreed with the account in the cloud.
+ * Only present while signed in. Never included in backup files.
+ */
+export type SyncMeta = {
+  userId: string
+  /** Server time of the newest change already pulled. */
+  lastPulledAt?: string
+  /** Word id → fingerprint of the copy the server has. A word whose fingerprint differs has unsynced edits. */
+  words: Record<string, string>
+  /** Quiz ids the server already has. */
+  quizzes: string[]
+}
+
 export type Notebook = {
   version: 1
   words: Word[]
   quizzes: QuizSession[]
   settings: Settings
   lastBackupAt?: string
+  sync?: SyncMeta
 }

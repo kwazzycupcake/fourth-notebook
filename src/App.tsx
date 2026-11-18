@@ -8,6 +8,7 @@ import Quiz from './pages/Quiz'
 import More from './pages/More'
 import Story from './pages/Story'
 import Backup from './pages/Backup'
+import Account from './pages/Account'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="more" element={<More />} />
         <Route path="story" element={<Story />} />
         <Route path="backup" element={<Backup />} />
+        <Route path="account" element={<Account />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

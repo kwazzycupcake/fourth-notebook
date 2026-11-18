@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { STORAGE_KEY } from '../config'
 import { loadNotebook, saveNotebook } from '../lib/storage'
 import { createWord, newId } from '../lib/words'
 import { NotebookContext, type NotebookApi } from './context'
 import { reducer } from './reducer'
+import { SyncContext } from './syncContext'
+import { useCloudSync } from './useCloudSync'
 
 const now = () => new Date().toISOString()
 
@@ -25,17 +27,20 @@ export default function NotebookProvider({ children }: { children: ReactNode }) 
       if (e.key !== STORAGE_KEY) return
       const fresh = loadNotebook()
       loaded.current = fresh
-      dispatch({ type: 'replace', notebook: fresh })
+      dispatch({ type: 'load', notebook: fresh })
     }
     window.addEventListener('storage', onStorage)
     return () => window.removeEventListener('storage', onStorage)
   }, [])
 
-  // Keep a ref so removeWord's undo can find the word's original position.
+  // Always the newest notebook: for removeWord's undo, and for sync (a layout
+  // effect, so it's already up to date right after a flushSync).
   const latest = useRef(notebook)
-  useEffect(() => {
+  useLayoutEffect(() => {
     latest.current = notebook
   }, [notebook])
+
+  const sync = useCloudSync(notebook, dispatch, latest)
 
   const api = useMemo<NotebookApi>(
     () => ({
@@ -67,5 +72,9 @@ export default function NotebookProvider({ children }: { children: ReactNode }) 
     [notebook, saveError],
   )
 
-  return <NotebookContext.Provider value={api}>{children}</NotebookContext.Provider>
+  return (
+    <NotebookContext.Provider value={api}>
+      <SyncContext.Provider value={sync}>{children}</SyncContext.Provider>
+    </NotebookContext.Provider>
+  )
 }

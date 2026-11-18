@@ -7,6 +7,7 @@ import { SAMPLE_WORDS } from '../lib/sampleWords'
 import { backupFilename, mergeNotebooks, parseBackup, serializeBackup, type ParsedBackup } from '../lib/storage'
 import type { Notebook } from '../lib/types'
 import { useNotebook } from '../store/context'
+import { useSync } from '../store/syncContext'
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -31,6 +32,7 @@ function download(text: string, filename: string) {
 export default function Backup() {
   usePageTitle('Backup & restore')
   const { notebook, words, replaceNotebook, markBackedUp, addWord } = useNotebook()
+  const { user } = useSync()
   const fileInput = useRef<HTMLInputElement>(null)
   const [pending, setPending] = useState<Extract<ParsedBackup, { ok: true }> | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -78,8 +80,9 @@ export default function Backup() {
     <>
       <PageHeader kicker="Your data" title="Backup & restore">
         <p>
-          Your words are saved in this browser only. A backup file keeps them safe if you clear your browser, and moves
-          them to another phone or computer.
+          {user
+            ? 'Your words sync to your account. A backup file is an extra copy you keep yourself.'
+            : 'Your words are saved in this browser only. A backup file keeps them safe if you clear your browser, and moves them to another phone or computer.'}
         </p>
       </PageHeader>
 
