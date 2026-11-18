@@ -29,7 +29,7 @@ export default function QuizQuestion({
   useEffect(() => {
     if (!answered) return
     nextButton.current?.focus({ preventScroll: true })
-    // On phones the explanation starts below the fold, so bring it into view.
+    // On phones the options can push Next below the fold, so bring it into view.
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     panel.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' })
   }, [answered])
@@ -80,11 +80,18 @@ export default function QuizQuestion({
         })}
       </ul>
 
-      {/* Answer + explanation */}
+      {/* Verdict and Next, right under the options so you never have to scroll for it */}
       {answered && (
-        <div ref={panel} className="flex scroll-mb-28 flex-col gap-4 rounded-lg bg-paper-deep p-5 sm:scroll-mb-8" role="status">
-          <p className="font-display text-2xl font-semibold text-green">{correct ? 'Correct.' : 'Not quite.'}</p>
-          <div className="flex flex-col gap-1">
+        <>
+          <div ref={panel} className="flex scroll-mb-28 flex-wrap items-center justify-between gap-3 sm:scroll-mb-8" role="status">
+            <p className="font-display text-2xl font-semibold text-green">{correct ? 'Correct.' : 'Not quite.'}</p>
+            <button ref={nextButton} type="button" className={btn.primary} onClick={onNext}>
+              {isLast ? 'See results' : 'Next question'} →
+            </button>
+          </div>
+
+          {/* The word explained, for anyone who wants to read it */}
+          <div className="flex flex-col gap-1 rounded-lg bg-paper-deep p-5">
             <p>
               <b className="font-display text-xl">{w.word}</b>
               {w.partOfSpeech && POS_SHORT[w.partOfSpeech] && <i className="text-muted"> {POS_SHORT[w.partOfSpeech]}</i>}
@@ -95,12 +102,7 @@ export default function QuizQuestion({
             {w.example && <p className="mt-1 italic">“{w.example}”</p>}
             {source && <p className="mt-1 text-sm text-muted">You found it in {source}.</p>}
           </div>
-          <div>
-            <button ref={nextButton} type="button" className={btn.primary} onClick={onNext}>
-              {isLast ? 'See results' : 'Next question'} →
-            </button>
-          </div>
-        </div>
+        </>
       )}
     </div>
   )
