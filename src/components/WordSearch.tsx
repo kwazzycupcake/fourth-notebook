@@ -52,7 +52,9 @@ export default function WordSearch({
     const timer = setTimeout(async () => {
       const words = await suggestWords(q, fetch, controller.signal)
       if (id !== requestId.current) return
-      const list = words.filter((w) => w.toLowerCase() !== q.toLowerCase())
+      // Keep an exact match, and put it first: seeing your own word there tells you it's spelled right.
+      const exact = words.filter((w) => w.toLowerCase() === q.toLowerCase())
+      const list = [...exact, ...words.filter((w) => w.toLowerCase() !== q.toLowerCase())]
       setSuggestions(list)
       setActive(-1)
       setOpen(list.length > 0)
@@ -148,7 +150,13 @@ export default function WordSearch({
             }`}
           >
             <span>{s}</span>
-            {inNotebook(s) && <span className="font-body text-sm text-muted">in your notebook</span>}
+            {inNotebook(s) ? (
+              <span className="font-body text-sm text-muted">in your notebook</span>
+            ) : (
+              s.toLowerCase() === typed.trim().toLowerCase() && (
+                <span className="font-body text-sm text-green">✓ spelled right</span>
+              )
+            )}
           </li>
         ))}
       </ul>
