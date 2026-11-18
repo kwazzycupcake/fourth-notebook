@@ -53,7 +53,7 @@ export default function Layout() {
           <Link to="/" className="whitespace-nowrap font-display text-2xl font-semibold text-green no-underline">
             {APP_NAME}
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
           <nav aria-label="Main" className="hidden md:block">
             <ul className="flex items-center gap-0.5">
               {items.map((item) => (
@@ -73,6 +73,8 @@ export default function Layout() {
               ))}
             </ul>
           </nav>
+          {/* A thin rule keeps the account apart from the page links. */}
+          <span aria-hidden className="mx-3 hidden h-5 w-px bg-line md:block" />
           <AccountButton />
           </div>
         </div>
@@ -144,11 +146,11 @@ function AccountButton() {
       to="/account"
       aria-label={`Your account (${state})`}
       title={`${user.email ?? 'Your account'} · ${state}`}
-      className="relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-green font-display text-lg font-semibold text-paper transition-colors hover:bg-green-deep"
+      className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full border border-green bg-card font-display text-base font-semibold leading-none text-green transition-colors hover:bg-paper-deep"
     >
       {initial}
       {!healthy && (
-        <span aria-hidden className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-paper bg-muted" />
+        <span aria-hidden className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-paper bg-muted" />
       )}
     </NavLink>
   )
