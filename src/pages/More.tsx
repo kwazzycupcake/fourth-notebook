@@ -33,6 +33,13 @@ export default function More() {
           Your words are saved in this browser only, never on a server. Download a backup now and then.
         </p>
         <p className="max-w-sm">
+          The app counts visits anonymously with{' '}
+          <a href="https://www.goatcounter.com" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-green">
+            GoatCounter
+          </a>
+          : no cookies, and never the words you save.
+        </p>
+        <p className="max-w-sm">
           Definitions come from the{' '}
           <a href="https://dictionaryapi.dev" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-green">
             Free Dictionary API

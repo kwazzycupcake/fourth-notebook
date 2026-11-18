@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router'
+import { Navigate, Route, Routes } from 'react-router'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Library from './pages/Library'
@@ -15,6 +15,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="home" element={<Navigate to="/" replace />} />
         <Route path="library" element={<Library />} />
         <Route path="add" element={<AddWord />} />
         <Route path="words/:id/edit" element={<EditWord />} />

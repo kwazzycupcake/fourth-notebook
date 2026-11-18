@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics'
 import { usePageTitle } from '../lib/usePageTitle'
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router'
@@ -106,6 +107,7 @@ export default function AddWord() {
     const input = formToInput(values)
     const word = addWord(input)
     setLastSource(input.source)
+    trackEvent('word-added')
     setSaved(word)
     reset()
     window.scrollTo({ top: 0, behavior: 'smooth' })

@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { HashRouter } from 'react-router'
+import { BrowserRouter } from 'react-router'
 
 // Fonts are bundled with the app (no Google request), so they also work offline.
 import '@fontsource/cormorant-garamond/500.css'
@@ -14,15 +14,24 @@ import '@fontsource/caveat/500.css'
 import './index.css'
 import App from './App.tsx'
 import NotebookProvider from './store/NotebookProvider.tsx'
+import { initAnalytics } from './lib/analytics.ts'
 
-// HashRouter keeps page links as /#/library, which GitHub Pages can serve
-// without a 404 when you refresh.
+// The site lives under /fourth-notebook/ (see vite.config.ts); pages are /fourth-notebook/library etc.
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '')
+
+// Old links used /#/library. Turn them into /library so bookmarks keep working.
+if (location.hash.startsWith('#/')) {
+  history.replaceState(null, '', `${basename}${location.hash.slice(1)}`)
+}
+
+initAnalytics()
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <NotebookProvider>
-      <HashRouter>
+      <BrowserRouter basename={basename}>
         <App />
-      </HashRouter>
+      </BrowserRouter>
     </NotebookProvider>
   </StrictMode>,
 )

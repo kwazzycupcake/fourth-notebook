@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics'
 import { usePageTitle } from '../lib/usePageTitle'
 import { useRef, useState, type ChangeEvent } from 'react'
 import Illustration from '../components/Illustration'
@@ -38,6 +39,7 @@ export default function Backup() {
   const handleDownload = () => {
     download(serializeBackup(notebook), backupFilename())
     markBackedUp()
+    trackEvent('backup-downloaded')
     setMessage(`Backup downloaded with ${plural(words.length, 'word')}.`)
   }
 

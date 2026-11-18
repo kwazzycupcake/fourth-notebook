@@ -1,7 +1,17 @@
-import type { ReactNode } from 'react'
-import { Link, NavLink, Outlet } from 'react-router'
+import { useEffect, type ReactNode } from 'react'
+import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { APP_NAME } from '../config'
+import { trackPage } from '../lib/analytics'
 import { useNotebook } from '../store/context'
+
+/** Counts a page view whenever the page changes. Word ids are dropped so each edit page counts as one. */
+function usePageViews() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    const page = pathname.replace(/^\/words\/[^/]+\/edit$/, '/words/edit')
+    trackPage(`${import.meta.env.BASE_URL.replace(/\/$/, '')}${page}`)
+  }, [pathname])
+}
 
 type NavItem = { to: string; label: string; icon: ReactNode; end?: boolean }
 
@@ -31,6 +41,7 @@ const items: NavItem[] = [
 
 export default function Layout() {
   const { saveError } = useNotebook()
+  usePageViews()
   return (
     <div className="min-h-dvh flex flex-col">
       {/* Top bar: brand everywhere, links on desktop */}

@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { defineConfig } from 'vite'
+import { copyFileSync } from 'node:fs'
 
 // GitHub Pages serves the app from https://<username>.github.io/<repo-name>/,
 // so every asset path starts with the repo name. If you rename the repo,
@@ -15,6 +16,16 @@ export default defineConfig({
   server: { host: true },
   plugins: [
     react(),
+    // GitHub Pages shows 404.html for any address it doesn't have as a file
+    // (like /fourth-notebook/library). Making 404.html a copy of the app means
+    // refreshing any page still opens the app, which then shows that page.
+    {
+      name: 'github-pages-spa-fallback',
+      apply: 'build',
+      closeBundle() {
+        copyFileSync('dist/index.html', 'dist/404.html')
+      },
+    },
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',

@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics'
 import { usePageTitle } from '../lib/usePageTitle'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
@@ -86,6 +87,7 @@ export default function Quiz() {
     if (!questions || !chosenId) return
     if (index + 1 >= questions.length) {
       save()
+      trackEvent('quiz-finished')
       setFinished(true)
     } else {
       setIndex(index + 1)
